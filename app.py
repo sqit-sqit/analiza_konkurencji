@@ -3,6 +3,7 @@ from config import konkurencja_urls, obszar
 from scraper_selenium import pobierz_zawartosc_strony
 from analiza import analizuj_oferte
 from raport import generuj_raport
+from debug_tools import check_connection
 
 st.set_page_config(page_title="Analiza konkurencji", layout="wide")
 st.title("🔍 Analiza ofert konkurencyjnych hoteli")
@@ -24,6 +25,9 @@ default_prompt = (
 )
 prompt_template = st.sidebar.text_area("Prompt", value=default_prompt, height=200)
 
+for url in urls:
+    check_connection(url)
+
 # 🔘 Start analizy
 if st.button("Rozpocznij analizę"):
     analizy = {}
@@ -32,7 +36,7 @@ if st.button("Rozpocznij analizę"):
             if url.strip():
                 st.markdown(f"#### 🌐 {url}")
                 tekst = pobierz_zawartosc_strony(url, delay=10)
-                st.text(tekst)
+                # st.text(tekst)
                 if tekst:
                     nazwa = url.split("//")[-1].split("/")[0]
                     prompt = prompt_template.format(nazwa=nazwa, obszar=obszar, tekst=tekst)
